@@ -1,0 +1,10 @@
+{{!< layout}}
+{{#if instance}}
+  <div><a href=http://{{{url}}} target=blank>View your environment on Runnable</a></div>
+  {{#if status}}
+    <div>Container Status: {{{status}}}</div>
+  {{/if}}
+{{/if}}
+{{#unless instance}}
+  <div>{{{text}}}</div>
+{{/unless}}
