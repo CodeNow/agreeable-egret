@@ -3,8 +3,6 @@
 require('loadenv')()
 const log = require('util/logger').child({ module: 'app' })
 
-log.trace(process.env.RUNNABLE_API_URL)
-
 // This is the entry point for your add-on, creating and configuring
 // your add-on HTTP server
 

@@ -38,7 +38,7 @@
           "store": {
             "adapter": "jugglingdb",
             "type": "postgres",
-            "url": "postgres://egret@localhost/egret"
+            "url": "postgres://postgres@localhost/egret"
           },
         // "store": {
         //     "adapter": "jugglingdb",
