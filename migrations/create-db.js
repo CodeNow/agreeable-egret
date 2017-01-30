@@ -1,4 +1,5 @@
 'use strict'
+
 require('loadenv')()
 const knex = require('knex')
 

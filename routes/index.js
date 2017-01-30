@@ -1,3 +1,5 @@
+'use strict'
+
 const runnableAPI = require('util/runnable-api-client')
 const Promise = require('bluebird')
 const log = require('util/logger').child({ module: 'runnable-web-panel/routes' })
