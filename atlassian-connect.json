@@ -6,10 +6,10 @@
         "name": "Runnable",
         "url": "https://www.runnable.io"
     },
-    "baseUrl": "https://270c442d.ngrok.io",
+    "baseUrl": "https://app.runnable-gamma.com",
     "links": {
-        "self": "https://270c442d.ngrok.io/atlassian-connect.json",
-        "homepage": "https://270c442d.ngrok.io/atlassian-connect.json"
+        "self": "https://app.runnable-gamma.com/atlassian-connect.json",
+        "homepage": "https://app.runnable-gamma.com/atlassian-connect.json"
     },
     "authentication": {
         "type": "jwt"
