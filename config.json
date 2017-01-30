@@ -35,16 +35,16 @@
         // To instead configure, say, a PostgreSQL store, the following could be
         // used:
         //
-          "store": {
+          // "store": {
+          //   "adapter": "jugglingdb",
+          //   "type": "postgres",
+          //   "url": "postgres://postgres@localhost/egret"
+          // },
+        "store": {
             "adapter": "jugglingdb",
-            "type": "postgres",
-            "url": "postgres://postgres@localhost/egret"
-          },
-        // "store": {
-        //     "adapter": "jugglingdb",
-        //     "type": "sqlite3",
-        //     "database": "store.db"
-        // }
+            "type": "sqlite3",
+            "database": "store.db"
+        }
     },
     // This is the production add-on configuration, which is enabled by setting
     // the NODE_ENV=production environment variable.
