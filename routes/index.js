@@ -35,7 +35,7 @@ module.exports = function (app, addon) {
             let containerStatus = keypather.get(filteredInstance, 'container.inspect.State.Status')
             return res.render('web-panel', {
               instance: true,
-              url: 'app.runnable-gamma.com/' + username + '\\' + filteredInstance.name,
+              url: 'app.runnable.io/' + username + '\\' + filteredInstance.name,
               status: containerStatus
             });
           }
