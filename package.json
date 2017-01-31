@@ -3,9 +3,8 @@
   "version": "0.0.2",
   "private": true,
   "scripts": {
-    "create-db": "NODE_PATH=./ node ./migrations/create-db.js",
     "start": "NODE_PATH=./ node app.js",
-    "start-local": "NODE_PATH=./ NODE_ENV=local node app.js"
+    "start-local": "NODE_PATH=./ NODE_ENV=local node app.js",
   },
   "dependencies": {
     "@runnable/api-client": "9.2.6",
@@ -19,7 +18,7 @@
     "express": "^4.13.3",
     "express-hbs": "*",
     "jugglingdb-postgres": "^0.1.0",
-    "jugglingdb-sqlite3": "0.0.5",
+    "jugglingdb-sqlite3": "^0.0.5",
     "keypather": "^2.0.0",
     "knex": "^0.12.6",
     "loadenv": "^2.2.0",
