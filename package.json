@@ -19,7 +19,7 @@
     "express": "^4.13.3",
     "express-hbs": "*",
     "jugglingdb-postgres": "^0.1.0",
-    "jugglingdb-sqlite3": "0.0.5",
+    "jugglingdb-sqlite3": "^0.0.5",
     "keypather": "^2.0.0",
     "knex": "^0.12.6",
     "loadenv": "^2.2.0",
