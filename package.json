@@ -3,9 +3,8 @@
   "version": "0.0.2",
   "private": true,
   "scripts": {
-    "create-db": "NODE_PATH=./ node ./migrations/create-db.js",
     "start": "NODE_PATH=./ node app.js",
-    "start-local": "NODE_PATH=./ NODE_ENV=local node app.js"
+    "start-local": "NODE_PATH=./ NODE_ENV=local node app.js",
   },
   "dependencies": {
     "@runnable/api-client": "9.2.6",
