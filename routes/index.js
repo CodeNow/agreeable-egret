@@ -41,7 +41,7 @@ module.exports = function (app, addon) {
           }
           return res.render('web-panel', {
             instance: false,
-            text: 'Sorry, there is no environment for this issue on Runnable.'
+            text: 'We couldn‘t find an environment for this issue.'
           });
         })
         .catch((err) => {
