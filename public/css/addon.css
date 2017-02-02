@@ -6,3 +6,19 @@ body {
   margin-left: 2px;
   margin-right: 6px;
 }
+
+.emoji {
+  font-size: 21px;
+}
+
+.btn-wrapper {
+  margin-top: 9px;
+}
+
+.btn {
+  border: 1px solid currentColor;
+  border-radius: 6px;
+  display: inline-block;
+  font-size: 13px;
+  padding: 3px 6px;
+}
