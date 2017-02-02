@@ -33,8 +33,13 @@
             "name": {
               "value": "Environments"  // appears as the title above the integration
             },
-            "key": "runnable-panel"
+            "key": "runnable-panel",
           }
-        ]
+        ],
+        "icon": {
+            "width": 72,
+            "height": 72,
+            "url": "https://s3-us-west-1.amazonaws.com/runnable-design/runnable-icon.png"
+        }
     }
 }
