@@ -11,14 +11,7 @@ body {
   font-size: 21px;
 }
 
-.btn-wrapper {
-  margin-top: 9px;
-}
-
-.btn {
-  border: 1px solid currentColor;
-  border-radius: 6px;
+.link {
   display: inline-block;
-  font-size: 13px;
-  padding: 3px 6px;
+  margin-top: 9px;
 }
