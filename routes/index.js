@@ -3,6 +3,7 @@
 const runnableAPI = require('util/runnable-api-client')
 const Promise = require('bluebird')
 const log = require('util/logger').child({ module: 'runnable-web-panel/routes' })
+const InstanceService = require('util/InstanceService')
 const keypather = require('keypather')()
 module.exports = function (app, addon) {
 
@@ -30,13 +31,23 @@ module.exports = function (app, addon) {
       return runnableAPI.getAllInstancesWithIssue(issueNumber)
         .then(function (instances) {
           if (instances.length) {
-            let filteredInstance = instances[0]
+            let filteredInstances = instances.filter((instance) => {
+              return keypather.get(instance, 'contextVersion.appCodeVersions[0].repo')
+            })
+            let filteredInstance = filteredInstances[0]
+            log.trace({filteredInstance}, 'this is the filtered instance')
+            let environmentUrl = InstanceService.getContainerUrl(filteredInstance)
             let username = filteredInstance.owner.username
+            let repoName = keypather.get(filteredInstance, 'contextVersion.appCodeVersions[0].repo').split('/')[1]
             let containerStatus = keypather.get(filteredInstance, 'container.inspect.State.Status')
+            let instanceName = filteredInstance.name
             return res.render('web-panel', {
               instance: true,
-              url: 'app.runnable.io/' + username + '\\' + filteredInstance.name,
-              status: containerStatus
+              instanceName: instanceName,
+              url: 'app.runnable-gamma.com/' + username + '\\' + instanceName,
+              status: containerStatus,
+              repoName: repoName,
+              environmentUrl: environmentUrl
             });
           }
           return res.render('web-panel', {
