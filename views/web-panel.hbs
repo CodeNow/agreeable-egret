@@ -2,10 +2,10 @@
 {{#if instance}}
   {{#if status}}
   {{!-- if status --}}
-  <div>Deployed <img src="https://s3-us-west-1.amazonaws.com/runnable-design/status-green.svg" title="{{{status}}}" width="9" height="9"><a href="#">repoName/SAN-7334</a><a href=http://{{{url}}} target="_blank">View on Runnable</a></div>
+  <div>Deployed <img src="https://s3-us-west-1.amazonaws.com/runnable-design/status-green.svg" title="{{{status}}}" width="9" height="9"><a href="#">repoName/SAN-7334</a>. <a href=http://{{{url}}} target="_blank">View on Runnable</a>.</div>
   {{#else}}
   {{!-- if no status (between building and running) --}}
-  <div>Deploying <img src="https://s3-us-west-1.amazonaws.com/runnable-design/status-orange.svg" title="{{{status}}}" width="9" height="9"><a href="#">repoName/SAN-7334</a><a href=http://{{{url}}} target="_blank">View on Runnable</a></div>
+  <div>Deploying <img src="https://s3-us-west-1.amazonaws.com/runnable-design/status-orange.svg" title="{{{status}}}" width="9" height="9"><a href="#">repoName/SAN-7334</a>. <a href=http://{{{url}}} target="_blank">View on Runnable</a>.</div>
   {{/if}}
 {{/if}}
 {{#unless instance}}
