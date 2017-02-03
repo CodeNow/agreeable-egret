@@ -26,7 +26,8 @@ module.exports = function (app, addon) {
     });
 
     app.get('/runnable-web-panel', addon.authenticate(), function (req, res) {
-      let issueNumber = req.headers.referer.substr(req.headers.referer.lastIndexOf('/') + 1)
+      // let issueNumber = req.headers.referer.substr(req.headers.referer.lastIndexOf('/') + 1)
+      let issueNumber = 'SAN-5692'
       let issueNumberRegex = new RegExp(issueNumber, 'i')
       return runnableAPI.getAllInstancesWithIssue(issueNumber)
         .then(function (instances) {
@@ -34,19 +35,24 @@ module.exports = function (app, addon) {
             let filteredInstances = instances.filter((instance) => {
               return keypather.get(instance, 'contextVersion.appCodeVersions[0].repo')
             })
+            log.trace({filteredInstanceLength: filteredInstances.length, isTesting: filteredInstances[0].isTesting})
             if (filteredInstances.length === 1 && filteredInstances[0].isTesting === true) {
+              log.trace({filteredInstances}, 'these are the filtered instances')
+              let filteredInstance = filteredInstances[0]
               let testResults = InstanceService.getContainerStatus(filteredInstance.container, true)
-              let instance = filteredInstances[0]
               return res.render('web-panel', {
                 isTestingOnly: true,
-                instanceName: instance.name,
-                repoName: keypather.get(instance, 'contextVersion.appCodeVersions[0].repo').split('/')[1],
-                url: 'app.runnable.io/' + username + '\\' + instanceName,
+                instance: true,
+                instanceName: filteredInstance.name,
+                repoName: keypather.get(filteredInstance, 'contextVersion.appCodeVersions[0].repo').split('/')[1],
+                url: 'app.runnable.io/' + filteredInstance.owner.username + '\\' + filteredInstance.name,
                 testColor: testResults.testColor,
                 testResults: testResults.testResults
               })
             }
-            let filteredInstance = filteredInstances[0]
+            let filteredInstance = filteredInstances.find((instance) => {
+              return !instance.isTesting
+            })
             let environmentUrl = InstanceService.getContainerUrl(filteredInstance)
             let username = filteredInstance.owner.username
             let repoName = keypather.get(filteredInstance, 'contextVersion.appCodeVersions[0].repo').split('/')[1]

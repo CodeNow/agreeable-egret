@@ -56,10 +56,7 @@ module.exports = class InstanceService {
     let statusColor = statusHash[status]
     return {
       status,
-      statusColor,
-      exitCode,
-      isTesting,
-      testStatusFailed
+      statusColor
     }
   }
 }
