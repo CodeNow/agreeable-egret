@@ -5,6 +5,7 @@ const keypather = require('keypather')()
 
 const statusHash = {
   'exited': 'red',
+  'building': 'orange',
   'running': 'green',
   'passed': 'green',
   'failed': 'red'
@@ -42,19 +43,27 @@ module.exports = class InstanceService {
     return 'http://' + hostname + ':' + preferredPort
   }
 
-  static getContainerStatus (container, isTestingOnly) {
+  static getContainerStatus (instance, isTestingOnly) {
+    let container = instance.container
+    let failed
     if (isTestingOnly) {
       let exitCode = keypather.get(container, 'inspect.State.ExitCode')
-      let testStatusFailed = exitCode > 0
-      let testResults = testStatusFailed ? 'failed' : 'passed'
+      failed = exitCode > 0
+      let testResults = failed ? 'failed' : 'passed'
       return {
         testResults,
         testColor: statusHash[testResults]
       }
     }
     let status = keypather.get(container, 'inspect.State.Status')
+    if (!status) {
+      failed = keypather.get(instance, 'contextVersion.build.failed')
+      status = failed ? 'failed' : 'building'
+    }
     let statusColor = statusHash[status]
+    let state = status === 'building' ? 'Deploying' : 'Deployed'
     return {
+      state,
       status,
       statusColor
     }

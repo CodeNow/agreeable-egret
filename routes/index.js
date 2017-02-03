@@ -34,11 +34,9 @@ module.exports = function (app, addon) {
             let filteredInstances = instances.filter((instance) => {
               return keypather.get(instance, 'contextVersion.appCodeVersions[0].repo')
             })
-            log.trace({filteredInstanceLength: filteredInstances.length, isTesting: filteredInstances[0].isTesting})
             if (filteredInstances.length === 1 && filteredInstances[0].isTesting === true) {
-              log.trace({filteredInstances}, 'these are the filtered instances')
               let filteredInstance = filteredInstances[0]
-              let testResults = InstanceService.getContainerStatus(filteredInstance.container, true)
+              let testResults = InstanceService.getContainerStatus(filteredInstance, true)
               return res.render('web-panel', {
                 isTestingOnly: true,
                 instance: true,
@@ -55,9 +53,9 @@ module.exports = function (app, addon) {
             let environmentUrl = InstanceService.getContainerUrl(filteredInstance)
             let username = filteredInstance.owner.username
             let repoName = keypather.get(filteredInstance, 'contextVersion.appCodeVersions[0].repo').split('/')[1]
-            let containerStatus = InstanceService.getContainerStatus(filteredInstance.container, filteredInstance.isTesting)
+            let containerStatus = InstanceService.getContainerStatus(filteredInstance, filteredInstance.isTesting)
             let instanceName = filteredInstance.name
-            log.trace({containerStatus}, 'container status')
+            log.trace({filteredInstance, containerFailed: keypather.get(filteredInstance, 'contextVersion.build.failed')}, 'these are the filtered instance')
             return res.render('web-panel', {
               instance: true,
               instanceName,
@@ -65,6 +63,7 @@ module.exports = function (app, addon) {
               status: containerStatus.status,
               statusColor: containerStatus.statusColor,
               repoName,
+              state: containerStatus.state,
               environmentUrl
             });
           }
