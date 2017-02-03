@@ -3,6 +3,11 @@
 const log = require('util/logger').child({ module: 'runnable-web-panel/routes' })
 const keypather = require('keypather')()
 
+const statusHash = {
+  'exited': 'red',
+  'running': 'green'
+}
+
 module.exports = class InstanceService {
   static get log () {
     return logger.child({
@@ -33,5 +38,22 @@ module.exports = class InstanceService {
       return 'https://' + hostname
     }
     return 'http://' + hostname + ':' + preferredPort
+  }
+
+  static getContainerStatus (container, isTesting) {
+    let status = keypather.get(container, 'inspect.State.Status')
+    let statusColor = statusHash[status]
+    let exitCode = keypather.get(container, 'inspect.State.ExitCode')
+    let testStatusFailed
+    if (isTesting) {
+      testStatusFailed = exitCode > 0
+    }
+    return {
+      status,
+      statusColor,
+      exitCode,
+      isTesting,
+      testStatusFailed
+    }
   }
 }

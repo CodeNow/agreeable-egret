@@ -26,7 +26,8 @@ module.exports = function (app, addon) {
     });
 
     app.get('/runnable-web-panel', addon.authenticate(), function (req, res) {
-      let issueNumber = req.headers.referer.substr(req.headers.referer.lastIndexOf('/') + 1)
+      // let issueNumber = req.headers.referer.substr(req.headers.referer.lastIndexOf('/') + 1)
+      let issueNumber = 'node-starter-web'
       let issueNumberRegex = new RegExp(issueNumber, 'i')
       return runnableAPI.getAllInstancesWithIssue(issueNumber)
         .then(function (instances) {
@@ -35,19 +36,20 @@ module.exports = function (app, addon) {
               return keypather.get(instance, 'contextVersion.appCodeVersions[0].repo')
             })
             let filteredInstance = filteredInstances[0]
-            log.trace({filteredInstance}, 'this is the filtered instance')
             let environmentUrl = InstanceService.getContainerUrl(filteredInstance)
             let username = filteredInstance.owner.username
             let repoName = keypather.get(filteredInstance, 'contextVersion.appCodeVersions[0].repo').split('/')[1]
-            let containerStatus = keypather.get(filteredInstance, 'container.inspect.State.Status')
+            let containerStatus = InstanceService.getContainerStatus(filteredInstance.container, filteredInstance.isTesting)
             let instanceName = filteredInstance.name
+            log.trace({containerStatus}, 'container status')
             return res.render('web-panel', {
               instance: true,
-              instanceName: instanceName,
+              instanceName,
               url: 'app.runnable-gamma.com/' + username + '\\' + instanceName,
-              status: containerStatus,
-              repoName: repoName,
-              environmentUrl: environmentUrl
+              status: containerStatus.status,
+              statusColor: containerStatus.statusColor,
+              repoName,
+              environmentUrl
             });
           }
           return res.render('web-panel', {
