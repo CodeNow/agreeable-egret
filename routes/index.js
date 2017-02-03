@@ -45,7 +45,7 @@ module.exports = function (app, addon) {
             return res.render('web-panel', {
               instance: true,
               instanceName,
-              url: 'app.runnable-gamma.com/' + username + '\\' + instanceName,
+              url: 'app.runnable.io/' + username + '\\' + instanceName,
               status: containerStatus.status,
               statusColor: containerStatus.statusColor,
               repoName,
