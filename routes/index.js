@@ -26,8 +26,7 @@ module.exports = function (app, addon) {
     });
 
     app.get('/runnable-web-panel', addon.authenticate(), function (req, res) {
-      // let issueNumber = req.headers.referer.substr(req.headers.referer.lastIndexOf('/') + 1)
-      let issueNumber = 'SAN-5692'
+      let issueNumber = req.headers.referer.substr(req.headers.referer.lastIndexOf('/') + 1)
       let issueNumberRegex = new RegExp(issueNumber, 'i')
       return runnableAPI.getAllInstancesWithIssue(issueNumber)
         .then(function (instances) {
