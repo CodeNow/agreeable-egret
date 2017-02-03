@@ -34,6 +34,18 @@ module.exports = function (app, addon) {
             let filteredInstances = instances.filter((instance) => {
               return keypather.get(instance, 'contextVersion.appCodeVersions[0].repo')
             })
+            if (filteredInstances.length === 1 && filteredInstances[0].isTesting === true) {
+              let testResults = InstanceService.getContainerStatus(filteredInstance.container, true)
+              let instance = filteredInstances[0]
+              return res.render('web-panel', {
+                isTestingOnly: true,
+                instanceName: instance.name,
+                repoName: keypather.get(instance, 'contextVersion.appCodeVersions[0].repo').split('/')[1],
+                url: 'app.runnable.io/' + username + '\\' + instanceName,
+                testColor: testResults.testColor,
+                testResults: testResults.testResults
+              })
+            }
             let filteredInstance = filteredInstances[0]
             let environmentUrl = InstanceService.getContainerUrl(filteredInstance)
             let username = filteredInstance.owner.username

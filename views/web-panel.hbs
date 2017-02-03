@@ -1,25 +1,26 @@
 {{!< layout}}
 {{#if instance}}
-  {{#if status}}
-  {{!--
-    possible status colors:
-      "green"
-      "orange"
-      "red"
-      "gray"
-  --}}
-  <div>Deployed <img src="https://s3-us-west-1.amazonaws.com/runnable-design/status-{{{statusColor}}}.svg" title="{{{status}}}" width="9" height="9" class="icon-status">{{{repoName}}}/{{{instanceName}}}.</div>
-  <div class="btn-wrapper">
-    <a href="{{{environmentUrl}}}" target="_blank" class="btn">View environment</a>
-    <a href=http://{{{url}}} target="_blank" class="btn">View on Runnable</a>
-  </div>
+  {{#if isTestingOnly}}
+    <div>Tests {{{testResults}}} <img src="https://s3-us-west-1.amazonaws.com/runnable-design/status-{{{testColor}}}.svg" title="{{{testResults}}}" width="9" height="9" class="icon-status">{{{repoName}}}/{{{instanceName}}}.</div>
+    <div><a href=http://{{{url}}} target="_blank" class="link">View on Runnable</a></div>
   {{else}}
-  {{!-- if no status (between building and running) --}}
-  <div>Deploying <img src="https://s3-us-west-1.amazonaws.com/runnable-design/status-{{{statusColor}}}.svg" title="{{{status}}}" width="9" height="9" class="icon-status">{{{repoName}}}/{{{instanceName}}}</div>
-  <div class="btn-wrapper">
-    <a href="{{{environmentUrl}}}" target="_blank" class="btn">View environment</a>
-    <a href=http://{{{url}}} target="_blank" class="btn">View on Runnable</a>
-  </div>
+    {{#if status}}
+    {{!--
+      possible status colors:
+        "green"
+        "orange"
+        "red"
+        "gray"
+    --}}
+    <div>Deployed <img src="https://s3-us-west-1.amazonaws.com/runnable-design/status-{{{statusColor}}}.svg" title="{{{status}}}" width="9" height="9" class="icon-status">{{{repoName}}}/{{{instanceName}}}.</div>
+      <div><a href="{{{environmentUrl}}}" target="_blank" class="link">View environment</a></div>
+      <div><a href=http://{{{url}}} target="_blank" class="link">View on Runnable</a></div>
+    {{else}}
+    {{!-- if no status (between building and running) --}}
+    <div>Deploying <img src="https://s3-us-west-1.amazonaws.com/runnable-design/status-{{{statusColor}}}.svg" title="{{{status}}}" width="9" height="9" class="icon-status">{{{repoName}}}/{{{instanceName}}}</div>
+      <div><a href="{{{environmentUrl}}}" target="_blank" class="link">View environment</a></div>
+      <div><a href=http://{{{url}}} target="_blank" class="link">View on Runnable</a></div>
+    {{/if}}
   {{/if}}
 {{/if}}
 {{#unless instance}}
