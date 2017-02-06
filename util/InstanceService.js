@@ -1,6 +1,6 @@
 'use strict'
 
-const log = require('util/logger').child({ module: 'runnable-web-panel/routes' })
+const log = require('util/logger')
 const keypather = require('keypather')()
 
 const statusHash = {
@@ -13,13 +13,12 @@ const statusHash = {
 
 module.exports = class InstanceService {
   static get log () {
-    return logger.child({
+    return log.child({
       module: 'InstanceService'
     })
   }
 
   static getContainerUrl (instance) {
-    // log.trace({instance}, 'this is the instance')
     let preferredPort
     let temporaryPort
     let ports = keypather.get(instance, 'container.inspect.NetworkSettings.Ports')
@@ -33,7 +32,7 @@ module.exports = class InstanceService {
       } else if (!preferredPort && temporaryPort === '80') {
         preferredPort = temporaryPort
       }
-      return port.split('/')[0]
+      return temporaryPort
     })
     preferredPort = preferredPort || ports[0]
     let hostname = instance.shortHash + '-' + instance.elasticHostname
@@ -66,6 +65,41 @@ module.exports = class InstanceService {
       state,
       status,
       statusColor
+    }
+  }
+
+  static instanceIsTestInstance (instances) {
+    return instances.length === 1 && instances[0].isTesting === true
+  }
+
+  static getTestPanelOptions (instance) {
+    let testResults = InstanceService.getContainerStatus(instance, true)
+    return {
+      isTestingOnly: true,
+      instance: true,
+      instanceName: instance.name,
+      repoName: keypather.get(instance, 'contextVersion.appCodeVersions[0].repo').split('/')[1],
+      url: process.env.RUNNABLE_URL + instance.owner.username + '\\' + instance.name,
+      testColor: testResults.testColor,
+      testResults: testResults.testResults
+    }
+  }
+
+  static getNonTestPanelOptions (instance) {
+    let environmentUrl = InstanceService.getContainerUrl(instance)
+    let username = instance.owner.username
+    let repoName = keypather.get(instance, 'contextVersion.appCodeVersions[0].repo').split('/')[1]
+    let containerStatus = InstanceService.getContainerStatus(instance)
+    let instanceName = instance.name
+    return {
+      instance: true,
+      instanceName,
+      url: process.env.RUNNABLE_URL + username + '\\' + instanceName,
+      status: containerStatus.status,
+      statusColor: containerStatus.statusColor,
+      repoName,
+      state: containerStatus.state,
+      environmentUrl
     }
   }
 }

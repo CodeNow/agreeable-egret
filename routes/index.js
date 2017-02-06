@@ -34,39 +34,19 @@ module.exports = function (app, addon) {
             let filteredInstances = instances.filter((instance) => {
               return keypather.get(instance, 'contextVersion.appCodeVersions[0].repo')
             })
-            if (filteredInstances.length === 1 && filteredInstances[0].isTesting === true) {
-              let filteredInstance = filteredInstances[0]
-              let testResults = InstanceService.getContainerStatus(filteredInstance, true)
-              return res.render('web-panel', {
-                isTestingOnly: true,
-                instance: true,
-                instanceName: filteredInstance.name,
-                repoName: keypather.get(filteredInstance, 'contextVersion.appCodeVersions[0].repo').split('/')[1],
-                url: 'app.runnable.io/' + filteredInstance.owner.username + '\\' + filteredInstance.name,
-                testColor: testResults.testColor,
-                testResults: testResults.testResults
-              })
+            if (InstanceService.instanceIsTestInstance(filteredInstances)) {
+              let testInstance = filteredInstances[0]
+              let testPanelOptions = InstanceService.getTestPanelOptions(testInstance)
+              return res.render('web-panel', testPanelOptions)
             }
-            let filteredInstance = filteredInstances.find((instance) => {
+            // we either have more than one instance for this issue number, or it is not a test instance
+            let nonTestInstance = filteredInstances.find((instance) => {
               return !instance.isTesting
             })
-            let environmentUrl = InstanceService.getContainerUrl(filteredInstance)
-            let username = filteredInstance.owner.username
-            let repoName = keypather.get(filteredInstance, 'contextVersion.appCodeVersions[0].repo').split('/')[1]
-            let containerStatus = InstanceService.getContainerStatus(filteredInstance, filteredInstance.isTesting)
-            let instanceName = filteredInstance.name
-            log.trace({filteredInstance, containerFailed: keypather.get(filteredInstance, 'contextVersion.build.failed')}, 'these are the filtered instance')
-            return res.render('web-panel', {
-              instance: true,
-              instanceName,
-              url: 'app.runnable.io/' + username + '\\' + instanceName,
-              status: containerStatus.status,
-              statusColor: containerStatus.statusColor,
-              repoName,
-              state: containerStatus.state,
-              environmentUrl
-            });
+            let nonTestPanelOptions = InstanceService.getNonTestPanelOptions(nonTestInstance)
+            return res.render('web-panel', nonTestPanelOptions)
           }
+          // no instances found
           return res.render('web-panel', {
             instance: false,
             text: 'We couldn‘t find an environment for this issue.'
@@ -74,6 +54,10 @@ module.exports = function (app, addon) {
         })
         .catch((err) => {
           log.trace(err)
+          return res.render('web-panel', {
+            instance: false,
+            text: 'We couldn‘t find an environment for this issue.'
+          });
         })
       }
     );
@@ -83,16 +67,16 @@ module.exports = function (app, addon) {
     {
         var fs = require('fs');
         var path = require('path');
-        var files = fs.readdirSync("routes");
+        var files = fs.readdirSync('routes');
         for(var index in files) {
             var file = files[index];
-            if (file === "index.js") continue;
+            if (file === 'index.js') continue;
             // skip non-javascript files
-            if (path.extname(file) != ".js") continue;
+            if (path.extname(file) != '.js') continue;
 
-            var routes = require("./" + path.basename(file));
+            var routes = require('./' + path.basename(file));
 
-            if (typeof routes === "function") {
+            if (typeof routes === 'function') {
                 routes(app, addon);
             }
         }
