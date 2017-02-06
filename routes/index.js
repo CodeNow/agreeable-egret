@@ -50,17 +50,17 @@ module.exports = function (app, addon) {
           return res.render('web-panel', {
             instance: false,
             text: 'We couldn‘t find an environment for this issue.'
-          });
+          })
         })
         .catch((err) => {
           log.trace(err)
           return res.render('web-panel', {
             instance: false,
             text: 'We couldn‘t find an environment for this issue.'
-          });
+          })
         })
       }
-    );
+    )
 
     // Add any additional route handlers you need for views or REST resources here...
     // load any additional files you have in routes and apply those to the app
