@@ -1,7 +1,6 @@
 'use strict'
 
 const Promise = require('bluebird')
-const request = require('request-promise')
 const RunnableClient = require('@runnable/api-client')
 // const log = require('util/logger').child({ module: 'runnable-api-client' })
 
