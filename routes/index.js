@@ -31,23 +31,20 @@ module.exports = function (app, addon) {
       return runnableAPI.getAllInstancesWithIssue(issueNumber)
         .then(function (instances) {
           if (instances.length) {
-            let webPanelRenderOptions = {}
             let filteredInstances = instances.filter((instance) => {
               return keypather.get(instance, 'contextVersion.appCodeVersions[0].repo')
             })
+            if (InstanceService.instanceIsTestInstance(filteredInstances)) {
+              let testInstance = filteredInstances[0]
+              let testPanelOptions = InstanceService.getTestPanelOptions(testInstance)
+              return res.render('web-panel', testPanelOptions)
+            }
+            // we either have more than one instance for this issue number, or it is not a test instance
             let nonTestInstance = filteredInstances.find((instance) => {
               return !instance.isTesting
             })
-            let testInstance = InstanceService.getTestInstance(filteredInstances)
-            if (testInstance) {
-              let testPanelOptions = InstanceService.getTestPanelOptions(testInstance)
-              Object.assign(webPanelRenderOptions, testPanelOptions)
-            }
-            if (nonTestInstance) {
-              let nonTestPanelOptions = InstanceService.getNonTestPanelOptions(nonTestInstance)
-              Object.assign(webPanelRenderOptions, nonTestPanelOptions)
-            }
-            return res.render('web-panel', webPanelRenderOptions)
+            let nonTestPanelOptions = InstanceService.getNonTestPanelOptions(nonTestInstance)
+            return res.render('web-panel', nonTestPanelOptions)
           }
           // no instances found
           return res.render('web-panel', {

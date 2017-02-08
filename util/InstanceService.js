@@ -68,20 +68,18 @@ module.exports = class InstanceService {
     }
   }
 
-  static getTestInstance (instances) {
-    return instances.find((instance) => {
-      return instance.isTesting
-    })
+  static instanceIsTestInstance (instances) {
+    return instances.length === 1 && instances[0].isTesting === true
   }
 
   static getTestPanelOptions (instance) {
     let testResults = InstanceService.getContainerStatus(instance, true)
     return {
-      isTesting: true,
-      environment: true,
-      testInstanceName: instance.name,
-      testRepoName: keypather.get(instance, 'contextVersion.appCodeVersions[0].repo').split('/')[1],
-      testUrl: process.env.RUNNABLE_URL + instance.owner.username + '\\' + instance.name,
+      isTestingOnly: true,
+      instance: true,
+      instanceName: instance.name,
+      repoName: keypather.get(instance, 'contextVersion.appCodeVersions[0].repo').split('/')[1],
+      url: process.env.RUNNABLE_URL + instance.owner.username + '\\' + instance.name,
       testColor: testResults.testColor,
       testResults: testResults.testResults
     }
@@ -94,7 +92,6 @@ module.exports = class InstanceService {
     let containerStatus = InstanceService.getContainerStatus(instance)
     let instanceName = instance.name
     return {
-      environment: true,
       instance: true,
       instanceName,
       url: process.env.RUNNABLE_URL + username + '\\' + instanceName,
