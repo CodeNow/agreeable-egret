@@ -8,11 +8,11 @@
         "gray"
     --}}
     <div>{{{ state }}} <img src="https://s3-us-west-1.amazonaws.com/runnable-design/status-{{{statusColor}}}.svg" title="{{{status}}}" width="9" height="9" class="icon-status">{{{repoName}}}/{{{instanceName}}}.</div>
-      <div><a href="{{{environmentUrl}}}" target="_blank" class="link">View environment</a></div>
-      <div><a href=http://{{{url}}} target="_blank" class="link">View on Runnable</a></div>
+      <div><a href="{{{environmentUrl}}}" target="_blank" class="link">View output</a></div>
+      <div><a href=http://{{{url}}} target="_blank" class="link">Manage on Runnable</a></div>
 {{/if}}
 {{#if isTesting}}
-  <br />
+  <br>
   <div>Tests {{{testResults}}} <img src="https://s3-us-west-1.amazonaws.com/runnable-design/status-{{{testColor}}}.svg" title="{{{testResults}}}" width="9" height="9" class="icon-status">{{{testRepoName}}}/{{{testInstanceName}}}.</div>
   <div><a href=http://{{{testUrl}}} target="_blank" class="link">View test results on Runnable</a></div>
 {{/if}}
