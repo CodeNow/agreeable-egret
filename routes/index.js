@@ -60,6 +60,7 @@ module.exports = function (app, addon) {
                 instance: false,
                 text: 'We couldn‘t find an environment for this issue.'
               })
+            })
         })
         .catch((err) => {
           log.trace(err)
