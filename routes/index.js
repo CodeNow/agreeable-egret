@@ -75,25 +75,12 @@ module.exports = function (app, addon) {
     app.post('/organizations', (req, res) => {
       let atlassianOrg = req.body.atlassianOrg
       let githubOrg = req.body.githubOrg
-      console.log(req.body)
       return new Organization()
         .save({
           atlassian_org: atlassianOrg,
           github_org: githubOrg
         })
         .then((organization) => {
-          res.send(200)
-        })
-    })
-
-    app.get('/organizations/:atlassianOrgName', (req, res) => {
-      let atlassianOrg = req.params.atlassianOrgName;
-      console.log(atlassianOrg)
-      return Organization
-        .where('atlassian_org', atlassianOrg)
-        .fetch()
-        .then((org) => {
-          console.log(org)
           res.send(200)
         })
     })
