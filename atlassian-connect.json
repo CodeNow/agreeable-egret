@@ -1,10 +1,10 @@
 {
     "key": "runnable-addon",
     "name": "Runnable",
-    "description": "Integration with Runnable environments",
+    "description": "Runnable Environments for JIRA",
     "vendor": {
         "name": "Runnable",
-        "url": "https://www.runnable.io"
+        "url": "https://runnable.com"
     },
     "baseUrl": "https://egret.runnable.io",
     "links": {
