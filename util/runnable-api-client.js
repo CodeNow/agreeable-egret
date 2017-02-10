@@ -1,7 +1,6 @@
 'use strict'
 
 const Promise = require('bluebird')
-const request = require('request-promise')
 const RunnableClient = require('@runnable/api-client')
 // const log = require('util/logger').child({ module: 'runnable-api-client' })
 
@@ -40,9 +39,9 @@ module.exports = class RunnableAPIClient {
    * @resolves {Array<Object>} instances - All instances owned by user
    * @returns {Promise}
    */
-  static getAllInstancesWithIssue (issueId) {
+  static getAllInstancesWithIssue (issueId, orgName) {
     return Promise.fromCallback(cb => {
-      client.fetchAllInstances({issueId: issueId}, cb)
+      client.fetchAllInstances({issueId, orgName}, cb)
     })
   }
 

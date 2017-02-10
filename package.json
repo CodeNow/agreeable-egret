@@ -1,26 +1,31 @@
 {
   "name": "my-addon",
-  "version": "0.1.13",
+  "version": "0.1.19",
   "private": true,
   "scripts": {
     "start": "NODE_PATH=./ node app.js",
-    "start-local": "NODE_PATH=./ NODE_ENV=local node app.js"
+    "start-local": "NODE_PATH=./ NODE_ENV=local node app.js",
+    "migrate-down": "knex-migrate down",
+    "migrate-up": "knex-migrate up"
   },
   "dependencies": {
     "@runnable/api-client": "9.2.6",
     "atlassian-connect-express": "2.0.0",
     "bluebird": "^3.4.7",
     "body-parser": "^1.14.2",
+    "bookshelf": "^0.10.3",
     "bunyan": "^1.8.5",
     "compression": "^1.6.0",
     "cookie-parser": "^1.4.0",
     "errorhandler": "^1.4.2",
+    "error-cat": "^3.0.0",
     "express": "^4.13.3",
     "express-hbs": "*",
     "jugglingdb-postgres": "^0.1.0",
     "jugglingdb-sqlite3": "^0.0.5",
     "keypather": "^2.0.0",
     "knex": "^0.12.6",
+    "knex-migrate": "^1.2.0",
     "loadenv": "^2.2.0",
     "morgan": "^1.6.1",
     "pg": "^6.1.2",
