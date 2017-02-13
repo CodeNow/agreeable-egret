@@ -27,8 +27,10 @@ module.exports = function (app, addon) {
     });
 
     app.get('/runnable-web-panel', addon.authenticate(), (req, res) => {
-      let issueNumber = req.headers.referer.substr(req.headers.referer.lastIndexOf('/') + 1)
-      let orgName = req.headers.referer.match(/\/\/(.+)\.atlassian/)[1]
+      // let issueNumber = req.headers.referer.substr(req.headers.referer.lastIndexOf('/') + 1)
+      // let orgName = req.headers.referer.match(/\/\/(.+)\.atlassian/)[1]
+      let issueNumber = 'SAN-5622'
+      let orgName = 'runnable'
       let issueNumberRegex = new RegExp(issueNumber, 'i')
       return Organization
         .where('atlassian_org', orgName)
@@ -39,27 +41,29 @@ module.exports = function (app, addon) {
         .then((orgName) => {
           return runnableAPI.getAllInstancesWithIssue(issueNumber, orgName)
             .then(function (instances) {
-              if (instances.length) {
-                let filteredInstances = instances.filter((instance) => {
-                  return keypather.get(instance, 'contextVersion.appCodeVersions[0].repo')
+              if (!instances.length) {
+                return res.render('web-panel', {
+                  instance: false,
+                  text: 'We couldn‘t find an environment for this issue.'
                 })
-                if (InstanceService.instanceIsTestInstance(filteredInstances)) {
-                  let testInstance = filteredInstances[0]
-                  let testPanelOptions = InstanceService.getTestPanelOptions(testInstance)
-                  return res.render('web-panel', testPanelOptions)
-                }
-                // we either have more than one instance for this issue number, or it is not a test instance
-                let nonTestInstance = filteredInstances.find((instance) => {
-                  return !instance.isTesting
-                })
-                let nonTestPanelOptions = InstanceService.getNonTestPanelOptions(nonTestInstance)
-                return res.render('web-panel', nonTestPanelOptions)
               }
-              // no instances found
-              return res.render('web-panel', {
-                instance: false,
-                text: 'We couldn‘t find an environment for this issue.'
+
+              let filteredInstances = instances.filter((instance) => {
+                return keypather.get(instance, 'contextVersion.appCodeVersions[0].repo')
               })
+              // in this case there are only test instances returned
+              if (InstanceService.instanceIsTestInstance(filteredInstances)) {
+                let testInstance = filteredInstances[0]
+                let testPanelOptions = InstanceService.getTestPanelOptions(testInstance)
+                return res.render('web-panel', testPanelOptions)
+              }
+
+              // we either have more than one instance for this issue number, or it is not a test instance
+              let nonTestInstance = filteredInstances.find((instance) => {
+                return !instance.isTesting
+              })
+              let nonTestPanelOptions = InstanceService.getNonTestPanelOptions(nonTestInstance)
+              return res.render('web-panel', nonTestPanelOptions)
             })
         })
         .catch((err) => {
