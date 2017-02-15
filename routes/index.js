@@ -50,7 +50,7 @@ module.exports = function (app, addon) {
                 return keypather.get(instance, 'contextVersion.appCodeVersions[0].repo')
               })
               // in this case there are only test instances returned
-              if (InstanceService.instanceIsTestInstance(filteredInstances)) {
+              if (InstanceService.instancesAreTestInstances(filteredInstances)) {
                 let testInstance = filteredInstances[0]
                 let testPanelOptions = InstanceService.getTestPanelOptions(testInstance)
                 return res.render('web-panel', testPanelOptions)

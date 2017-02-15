@@ -68,8 +68,10 @@ module.exports = class InstanceService {
     }
   }
 
-  static instanceIsTestInstance (instances) {
-    return instances.length === 1 && instances[0].isTesting === true
+  static instancesAreTestInstances (instances) {
+    return instances.every((instance) => {
+      return instance.isTesting
+    })
   }
 
   static getTestPanelOptions (instance) {
