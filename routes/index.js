@@ -37,8 +37,10 @@ module.exports = function (app, addon) {
           return keypather.get(org, 'attributes.github_org_id')
         })
         .then((orgId) => {
+          log.trace(orgId, 'this is the org id')
           return runnableAPI.getAllInstancesWithIssue(issueNumber, orgId)
             .then(function (instances) {
+              log.trace(instances, 'these are the instances')
               if (!instances.length) {
                 return res.render('web-panel', {
                   instance: false,
