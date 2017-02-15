@@ -2,6 +2,7 @@
 
 const runnableAPI = require('util/runnable-api-client')
 const Promise = require('bluebird')
+const Organization = require('models/organization')
 const log = require('util/logger').child({ module: 'runnable-web-panel/routes' })
 const InstanceService = require('util/InstanceService')
 const keypather = require('keypather')()
@@ -11,7 +12,7 @@ module.exports = function (app, addon) {
 
     // Root route. This route will serve the `atlassian-connect.json` unless the
     // documentation url inside `atlassian-connect.json` is set
-    app.get('/', function (req, res) {
+    app.get('/', (req, res) => {
       res.format({
         // If the request content-type is text-html, it will decide which to serve up
         'text/html': function () {
@@ -25,32 +26,43 @@ module.exports = function (app, addon) {
       });
     });
 
-    app.get('/runnable-web-panel', addon.authenticate(), function (req, res) {
+    app.get('/runnable-web-panel', addon.authenticate(), (req, res) => {
       let issueNumber = req.headers.referer.substr(req.headers.referer.lastIndexOf('/') + 1)
+      let orgName = req.headers.referer.match(/\/\/(.+)\.atlassian/)[1]
       let issueNumberRegex = new RegExp(issueNumber, 'i')
-      return runnableAPI.getAllInstancesWithIssue(issueNumber)
-        .then(function (instances) {
-          if (instances.length) {
-            let filteredInstances = instances.filter((instance) => {
-              return keypather.get(instance, 'contextVersion.appCodeVersions[0].repo')
+      return Organization
+        .where('atlassian_org', orgName)
+        .fetch()
+        .then((org) => {
+          return org.attributes.github_org_id
+        })
+        .then((orgId) => {
+          return runnableAPI.getAllInstancesWithIssue(issueNumber, orgId)
+            .then(function (instances) {
+              if (!instances.length) {
+                return res.render('web-panel', {
+                  instance: false,
+                  text: 'We couldn‘t find an environment for this issue.'
+                })
+              }
+
+              let filteredInstances = instances.filter((instance) => {
+                return keypather.get(instance, 'contextVersion.appCodeVersions[0].repo')
+              })
+              // in this case there are only test instances returned
+              if (InstanceService.instancesAreTestInstances(filteredInstances)) {
+                let testInstance = filteredInstances[0]
+                let testPanelOptions = InstanceService.getTestPanelOptions(testInstance)
+                return res.render('web-panel', testPanelOptions)
+              }
+
+              // we either have more than one instance for this issue number, or it is not a test instance
+              let nonTestInstance = filteredInstances.find((instance) => {
+                return !instance.isTesting
+              })
+              let nonTestPanelOptions = InstanceService.getNonTestPanelOptions(nonTestInstance)
+              return res.render('web-panel', nonTestPanelOptions)
             })
-            if (InstanceService.instanceIsTestInstance(filteredInstances)) {
-              let testInstance = filteredInstances[0]
-              let testPanelOptions = InstanceService.getTestPanelOptions(testInstance)
-              return res.render('web-panel', testPanelOptions)
-            }
-            // we either have more than one instance for this issue number, or it is not a test instance
-            let nonTestInstance = filteredInstances.find((instance) => {
-              return !instance.isTesting
-            })
-            let nonTestPanelOptions = InstanceService.getNonTestPanelOptions(nonTestInstance)
-            return res.render('web-panel', nonTestPanelOptions)
-          }
-          // no instances found
-          return res.render('web-panel', {
-            instance: false,
-            text: 'We couldn‘t find an environment for this issue.'
-          })
         })
         .catch((err) => {
           log.trace(err)
@@ -61,6 +73,19 @@ module.exports = function (app, addon) {
         })
       }
     )
+
+    app.post('/organizations', (req, res) => {
+      let atlassianOrg = req.body.atlassianOrg
+      let githubOrg = req.body.githubOrgId
+      return new Organization()
+        .save({
+          atlassian_org: atlassianOrg,
+          github_org_id: githubOrgId
+        })
+        .then((organization) => {
+          res.send(200)
+        })
+    })
 
     // Add any additional route handlers you need for views or REST resources here...
     // load any additional files you have in routes and apply those to the app
