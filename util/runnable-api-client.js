@@ -39,9 +39,9 @@ module.exports = class RunnableAPIClient {
    * @resolves {Array<Object>} instances - All instances owned by user
    * @returns {Promise}
    */
-  static getAllInstancesWithIssue (issueId, orgName) {
+  static getAllInstancesWithIssue (issueId, orgId) {
     return Promise.fromCallback(cb => {
-      client.fetchAllInstances({issueId, orgName}, cb)
+      client.fetchAllInstances({issueId, orgId}, cb)
     })
   }
 

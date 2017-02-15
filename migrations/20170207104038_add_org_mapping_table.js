@@ -12,7 +12,7 @@ exports.up = function(knex, Promise) {
     table.string('github_org')
       .unique()
     table.integer('github_org_id')
-      .unique
+      .unique()
   })
   debug(createTable.toString())
   return createTable

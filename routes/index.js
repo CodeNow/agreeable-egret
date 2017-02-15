@@ -34,32 +34,34 @@ module.exports = function (app, addon) {
         .where('atlassian_org', orgName)
         .fetch()
         .then((org) => {
-          return org.attributes.github_org
+          return keypather.get(org, 'attributes.github_org_id')
         })
-        .then((orgName) => {
-          return runnableAPI.getAllInstancesWithIssue(issueNumber, orgName)
+        .then((orgId) => {
+          return runnableAPI.getAllInstancesWithIssue(issueNumber, orgId)
             .then(function (instances) {
-              if (instances.length) {
-                let filteredInstances = instances.filter((instance) => {
-                  return keypather.get(instance, 'contextVersion.appCodeVersions[0].repo')
+              if (!instances.length) {
+                return res.render('web-panel', {
+                  instance: false,
+                  text: 'We couldn‘t find an environment for this issue.'
                 })
-                if (InstanceService.instanceIsTestInstance(filteredInstances)) {
-                  let testInstance = filteredInstances[0]
-                  let testPanelOptions = InstanceService.getTestPanelOptions(testInstance)
-                  return res.render('web-panel', testPanelOptions)
-                }
-                // we either have more than one instance for this issue number, or it is not a test instance
-                let nonTestInstance = filteredInstances.find((instance) => {
-                  return !instance.isTesting
-                })
-                let nonTestPanelOptions = InstanceService.getNonTestPanelOptions(nonTestInstance)
-                return res.render('web-panel', nonTestPanelOptions)
               }
-              // no instances found
-              return res.render('web-panel', {
-                instance: false,
-                text: 'We couldn‘t find an environment for this issue.'
+
+              let filteredInstances = instances.filter((instance) => {
+                return keypather.get(instance, 'contextVersion.appCodeVersions[0].repo')
               })
+              // in this case there are only test instances returned
+              if (InstanceService.instancesAreTestInstances(filteredInstances)) {
+                let testInstance = filteredInstances[0]
+                let testPanelOptions = InstanceService.getTestPanelOptions(testInstance)
+                return res.render('web-panel', testPanelOptions)
+              }
+
+              // we either have more than one instance for this issue number, or it is not a test instance
+              let nonTestInstance = filteredInstances.find((instance) => {
+                return !instance.isTesting
+              })
+              let nonTestPanelOptions = InstanceService.getNonTestPanelOptions(nonTestInstance)
+              return res.render('web-panel', nonTestPanelOptions)
             })
         })
         .catch((err) => {
@@ -74,11 +76,11 @@ module.exports = function (app, addon) {
 
     app.post('/organizations', (req, res) => {
       let atlassianOrg = req.body.atlassianOrg
-      let githubOrg = req.body.githubOrg
+      let githubOrg = req.body.githubOrgId
       return new Organization()
         .save({
           atlassian_org: atlassianOrg,
-          github_org: githubOrg
+          github_org_id: githubOrgId
         })
         .then((organization) => {
           res.send(200)
