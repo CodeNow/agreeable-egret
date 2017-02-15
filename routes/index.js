@@ -27,19 +27,17 @@ module.exports = function (app, addon) {
     });
 
     app.get('/runnable-web-panel', addon.authenticate(), (req, res) => {
-      // let issueNumber = req.headers.referer.substr(req.headers.referer.lastIndexOf('/') + 1)
-      // let orgName = req.headers.referer.match(/\/\/(.+)\.atlassian/)[1]
-      let issueNumber = 'SAN-5622'
-      let orgName = 'runnable'
+      let issueNumber = req.headers.referer.substr(req.headers.referer.lastIndexOf('/') + 1)
+      let orgName = req.headers.referer.match(/\/\/(.+)\.atlassian/)[1]
       let issueNumberRegex = new RegExp(issueNumber, 'i')
       return Organization
         .where('atlassian_org', orgName)
         .fetch()
         .then((org) => {
-          return org.attributes.github_org
+          return org.attributes.github_org_id
         })
-        .then((orgName) => {
-          return runnableAPI.getAllInstancesWithIssue(issueNumber, orgName)
+        .then((orgId) => {
+          return runnableAPI.getAllInstancesWithIssue(issueNumber, orgId)
             .then(function (instances) {
               if (!instances.length) {
                 return res.render('web-panel', {
@@ -78,11 +76,11 @@ module.exports = function (app, addon) {
 
     app.post('/organizations', (req, res) => {
       let atlassianOrg = req.body.atlassianOrg
-      let githubOrg = req.body.githubOrg
+      let githubOrg = req.body.githubOrgId
       return new Organization()
         .save({
           atlassian_org: atlassianOrg,
-          github_org: githubOrg
+          github_org_id: githubOrgId
         })
         .then((organization) => {
           res.send(200)
