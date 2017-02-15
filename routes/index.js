@@ -34,7 +34,7 @@ module.exports = function (app, addon) {
         .where('atlassian_org', orgName)
         .fetch()
         .then((org) => {
-          return org.attributes.github_org_id
+          return keypather.get(org, 'attributes.github_org_id')
         })
         .then((orgId) => {
           return runnableAPI.getAllInstancesWithIssue(issueNumber, orgId)
