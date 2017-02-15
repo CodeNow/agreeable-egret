@@ -41,7 +41,11 @@ module.exports = class RunnableAPIClient {
    */
   static getAllInstancesWithIssue (issueId, orgId) {
     return Promise.fromCallback(cb => {
-      client.fetchAllInstances({issueId, orgId}, cb)
+      if (orgId) {
+        client.fetchAllInstances({issueId, orgId}, cb)
+      } else {
+        client.fetchAllInstances({issueId}, cb)
+      }
     })
   }
 
