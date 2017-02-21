@@ -27,7 +27,7 @@ module.exports = function (app, addon) {
     });
 
     app.get('/runnable-web-panel', addon.authenticate(), (req, res) => {
-      let issueNumber = req.headers.referer.substr(req.headers.referer.lastIndexOf('/') + 1)
+      let issueNumber = req.headers.referer.substr(req.headers.referer.lastIndexOf('/') + 1).split('?')[0]
       let orgName = req.headers.referer.match(/\/\/(.+)\.atlassian/)[1]
       let issueNumberRegex = new RegExp(issueNumber, 'i')
       return Organization
