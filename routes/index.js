@@ -27,7 +27,7 @@ module.exports = function (app, addon) {
     });
 
     app.get('/runnable-web-panel', addon.authenticate(), (req, res) => {
-      let issueNumber = req.headers.referer.substr(req.headers.referer.lastIndexOf('/') + 1)
+      let issueNumber = req.headers.referer.substr(req.headers.referer.lastIndexOf('/') + 1).split('?')[0]
       let orgName = req.headers.referer.match(/\/\/(.+)\.atlassian/)[1]
       let issueNumberRegex = new RegExp(issueNumber, 'i')
       return Organization
@@ -37,10 +37,8 @@ module.exports = function (app, addon) {
           return keypather.get(org, 'attributes.github_org_id')
         })
         .then((orgId) => {
-          log.trace(orgId, 'this is the org id')
           return runnableAPI.getAllInstancesWithIssue(issueNumber, orgId)
             .then(function (instances) {
-              log.trace(instances, 'these are the instances')
               if (!instances.length) {
                 return res.render('web-panel', {
                   instance: false,
