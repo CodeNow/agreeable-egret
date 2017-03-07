@@ -32,13 +32,21 @@ module.exports = function (app, addon) {
       let issueNumberRegex = new RegExp(issueNumber, 'i')
       return Organization
         .where('atlassian_org', orgName)
-        .fetch()
-        .then((org) => {
-          return keypather.get(org, 'attributes.github_org_id')
+        .fetchAll()
+        .then((orgs) => {
+          return orgs.models.map((org) => {
+            return keypather.get(org, 'attributes.github_org_id')
+          })
         })
-        .then((orgId) => {
-          return runnableAPI.getAllInstancesWithIssue(issueNumber, orgId)
+        .then((orgIds) => {
+          let getAllOrgs = orgIds.map((orgId) => {
+            return runnableAPI.getAllInstancesWithIssue(issueNumber, orgId)
+          })
+          return Promise.all(getAllOrgs)
             .then(function (instances) {
+              instances = instances.reduce((totalInstances, instanceList) => {
+                return totalInstances.concat(instanceList)
+              })
               if (!instances.length) {
                 return res.render('web-panel', {
                   instance: false,
