@@ -34,6 +34,9 @@ module.exports = function (app, addon) {
         .where('atlassian_org', orgName)
         .fetchAll()
         .then((orgs) => {
+          if (!orgs.models.length) {
+            throw new Error('org not found')
+          }
           return orgs.models.map((org) => {
             return keypather.get(org, 'attributes.github_org_id')
           })
