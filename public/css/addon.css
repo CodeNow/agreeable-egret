@@ -2,6 +2,24 @@ body {
   background: #fff;
 }
 
+section + section {
+  margin-top: 9px;
+}
+
+.section-manage {
+  margin-left: 17px;
+}
+
+.container {
+  display: inline-block;
+}
+
+.container + .container::before {
+  content: ',';
+  display: inline-block;
+  padding-right: 4px;
+}
+
 .icon-status {
   margin-left: 2px;
   margin-right: 6px;
@@ -13,5 +31,4 @@ body {
 
 .link {
   display: inline-block;
-  margin-top: 9px;
 }

@@ -1,29 +1,29 @@
 {{!< layout}}
 {{#if instance}}
-  {{#if isTestingOnly}}
-    <div><img src="https://s3-us-west-1.amazonaws.com/runnable-design/status-{{{testColor}}}.svg" title="{{{testResults}}}" width="9" height="9" class="icon-status">{{{instanceName}}}</div>
-    <div>Tests: <a href="testUrl" class="link" target="_blank"><strong>{{{testResults}}}</strong></a></div>
-    <div><a href=http://{{{url}}} target="_blank" class="link">Manage on Runnable</a></div>
-  {{else}}
-    {{#if status}}
-    {{!--
-      possible status colors:
-        "green"
-        "orange"
-        "red"
-        "gray"
-    --}}
-    <div><img src="https://s3-us-west-1.amazonaws.com/runnable-design/status-{{{statusColor}}}.svg" title="{{{status}}}" width="9" height="9" class="icon-status"><a href="{{{environmentUrl}}}" target="_blank" class="link">{{{instanceName}}}</a></div>
-    <div>Tests: <a href="testUrl" class="link" target="_blank"><strong>Passed</strong></a></div>
-    <div><a href=http://{{{url}}} target="_blank" class="link">Manage on Runnable</a></div>
-    {{else}}
-    {{!-- if no status (between building and running) --}}
-    <div><img src="https://s3-us-west-1.amazonaws.com/runnable-design/status-{{{statusColor}}}.svg" title="{{{status}}}" width="9" height="9" class="icon-status">{{{instanceName}}}</div>
-    <div>Tests: <a href="testUrl" class="link" target="_blank"><strong>Passed</strong></a></div>
-    <div><a href=http://{{{url}}} target="_blank" class="link">Manage on Runnable</a></div>
-    {{/if}}
+  {{!-- staging containers --}}
+  <section>
+    {{#each container}}
+    <div class="container">
+      <img src="https://s3-us-west-1.amazonaws.com/runnable-design/status-{{{statusColor}}}.svg" title="{{{status}}}" width="9" height="9" class="icon-status">
+      <a href="{{{environmentUrl}}}" target="_blank" class="link">{{{instanceName}}}</a>
+    </div>
+    {{/each}}
+  </section>
+
+  {{!-- conditionally show test results --}}
+  {{#if testResults}}
+  <section>
+    <img src="https://s3-us-west-1.amazonaws.com/runnable-design/status-{{{testColor}}}.svg" title="{{{testResults}}}" width="9" height="9" class="icon-status">
+    <a href="testUrl" class="link" target="_blank">{{{testResults}}}</a>
+  </section>
   {{/if}}
+
+  {{!-- manage on runnable url --}}
+  <section class="section-manage">
+    <a href=http://{{{url}}} target="_blank" class="link">Manage on Runnable</a>
+  </section>
 {{/if}}
+
 {{#unless instance}}
   <div><span class="emoji">🔭</span> {{{text}}}</div>
   <div><a href="//runnable.com/" class="link" target="_blank">Go to Runnable</a></div>
