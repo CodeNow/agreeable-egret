@@ -72,7 +72,7 @@ app.use(express.static(staticDir));
 
 // Show nicer errors when in dev mode
 if (devEnv) app.use(errorHandler());
-app.use(rollbar.errorHandler(process.env.ROLLBAR_KEY));
+rollbar.handleUncaughtExceptionsAndRejections(process.env.ROLLBAR_KEY)
 
 // Wire up your routes using the express and `atlassian-connect-express` objects
 routes(app, addon);

@@ -6,7 +6,7 @@ const Organization = require('models/organization')
 const log = require('util/logger').child({ module: 'runnable-web-panel/routes' })
 const InstanceService = require('util/InstanceService')
 const keypather = require('keypather')()
-const rollbar = require('rollbar')
+const ErrorHandler = require('util/ErrorHandler')
 module.exports = function (app, addon) {
 
     runnableAPI.login()
@@ -78,7 +78,7 @@ module.exports = function (app, addon) {
         })
         .catch((err) => {
           log.trace(err)
-          rollbar.handleError(err, req)
+          ErrorHandler.reportErrorToRollbar(err, req)
           return res.render('web-panel', {
             instance: false,
             text: 'We couldn‘t find an environment for this issue.'
