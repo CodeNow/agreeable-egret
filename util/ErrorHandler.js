@@ -10,11 +10,7 @@ module.exports = class ErrorHandler {
    *
    */
   static reportErrorToRollbar (err, req) {
-    console.log('\n\n\n', err.message, err, '\n\n\n')
-    if (err.message === 'org not found') {
-      return rollbar.handleErrorWithPayloadData(err, { level: 'info' }, req)
-    }
-      return rollbar.handleErrorWithPayloadData(err, { level: 'error' }, req)
+    return rollbar.handleErrorWithPayloadData(err, { level: 'error' }, req)
   }
 
 }
