@@ -1,6 +1,6 @@
 {
   "name": "my-addon",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "private": true,
   "scripts": {
     "start": "NODE_PATH=./ node app.js",
