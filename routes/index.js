@@ -78,7 +78,7 @@ module.exports = function (app, addon) {
         })
         .catch((err) => {
           log.trace(err)
-          rollbar.handleError(err, request)
+          rollbar.handleError(err, req)
           return res.render('web-panel', {
             instance: false,
             text: 'We couldn‘t find an environment for this issue.'
