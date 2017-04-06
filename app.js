@@ -14,6 +14,7 @@ const compression = require('compression');
 const cookieParser = require('cookie-parser');
 const errorHandler = require('errorhandler');
 const morgan = require('morgan');
+const rollbar = require('rollbar')
 // You need to load `atlassian-connect-express` to use her godly powers
 const ac = require('atlassian-connect-express');
 // Static expiry middleware to help serve static resources efficiently
@@ -71,6 +72,7 @@ app.use(express.static(staticDir));
 
 // Show nicer errors when in dev mode
 if (devEnv) app.use(errorHandler());
+app.use(rollbar.errorHandler(process.env.ROLLBAR_KEY));
 
 // Wire up your routes using the express and `atlassian-connect-express` objects
 routes(app, addon);
